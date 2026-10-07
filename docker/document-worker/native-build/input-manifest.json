@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "inputs": [
+    {
+      "name": "lxml-6.1.0-plwc-filtered.tar",
+      "sha256": "77847972509f1763aed8381ba7c3d90a39bb49469a135ed052d4ff540857ddf1",
+      "bytes": 31621120
+    },
+    {
+      "name": "libxml2-2.14.6.tar.xz",
+      "sha256": "7ce458a0affeb83f0b55f1f4f9e0e55735dbfc1a9de124ee86fb4a66b597203a",
+      "bytes": 2327580
+    },
+    {
+      "name": "libxslt-1.1.43.tar.xz",
+      "sha256": "5a3d6b383ca5afc235b171118e90f5ff6aa27e9fea3303065231a6d403f0183a",
+      "bytes": 1518364
+    },
+    {
+      "name": "zlib-1.3.2.tar.gz",
+      "sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16",
+      "bytes": 1502830
+    },
+    {
+      "name": "setuptools-70.3.0-py3-none-any.whl",
+      "sha256": "fe384da74336c398e0d956d1cae0669bc02eed936cdb1d49b57de1990dc11ffc",
+      "bytes": 931070,
+      "role": "external_unmodified_build_tool",
+      "url": "https://files.pythonhosted.org/packages/ef/15/88e46eb9387e905704b69849618e699dc2f54407d8953cc4ec4b8b46528d/setuptools-70.3.0-py3-none-any.whl",
+      "wheel_bundled_in_corresponding_source_collection": false,
+      "preferred_source_collection_sha256": "f171bab1dfbc86b132997f26a119f6056a57950d058587841a0082e8830f9dc5"
+    },
+    {
+      "name": "libiconv-1.18-linux-source.tar",
+      "sha256": "43945c938442d60ffd234a5ad0f760308d2ef064a93f8e41b1393d52ffe2411d",
+      "bytes": 24074240
+    }
+  ],
+  "architecture": "linux/amd64",
+  "python": "3.12.14",
+  "compiler": "GCC 14.2.0-19",
+  "CFLAGS": "-O1 -g0 -fPIC -MD -isystem /work/src/compiler-headers",
+  "LDFLAGS": "-fPIC",
+  "measured_recipe_sha256": "6575025dc6ab121a1609dd3348bf896403a5b38c8c9f607c317be910317dcb00",
+  "original_ungranted_macro_embedded": false,
+  "full_source_archive_rights_review_complete": false,
+  "recipe_inputs": [
+    {
+      "name": "syslimits.h",
+      "sha256": "00d4e14f4c6062679b0028ebaef566455f68471bc8e52c1519fb92df01299d70",
+      "bytes": 267
+    },
+    {
+      "name": "stdint.h",
+      "sha256": "f6560a57580ac7823dae446cd11c1ee88a2cca51b9a420b4ae586f96e4a008cf",
+      "bytes": 261
+    },
+    {
+      "name": "COPYING.LIB",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "bytes": 26419
+    }
+  ],
+  "packaged_recipe_sha256": "6575025dc6ab121a1609dd3348bf896403a5b38c8c9f607c317be910317dcb00",
+  "packaged_recipe_delta": "The packaged recipe, including ancillary-input hash preflight, was actually executed offline on 2026-10-07; all seven modules, 819 measured compiler inputs and six static archives equal the prior recipe build.",
+  "prior_recipe_without_ancillary_preflight_sha256": "d3cca67ae30d7e974f88e2b97c53753696ae8490295373adb8bf0bb402f60117"
+}

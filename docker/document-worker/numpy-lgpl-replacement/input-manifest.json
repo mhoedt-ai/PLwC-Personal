@@ -1,0 +1,11 @@
+{
+  "exact_source_rpm_sha256": "642c4085f6af9565e39583e54a9d7a5d9e6b93dd8c8e9474aec8a892d6c7aa36",
+  "exact_preferred_archive_name": "gcc-4.8.5-20150702.tar.bz2",
+  "exact_preferred_archive_sha256": "0ae59dc99f382e2d60736359f89eabf7616fe5a4410bbbda065c233e059d5f32",
+  "scope": "Modified libquadmath preferred-source replacement proof; CentOS patches and original binary build reproduction remain separate.",
+  "executed_build_script_sha256": "cd1abbb89900d8d5bf5bcbc2456d72979e536ea37af8b8ccd9b269e189a5a6a3",
+  "original_runtime_library_sha256": "6ed5137f412781ad7863439fb543613f620b43c32b63292a0029246162f5bbc6",
+  "measured_replacement_sha256": "6affb32949e22a3d549a15d5114692fc68bf7b70838852dd334399cc832ab3b5",
+  "compiler": "GCC 14.2.0-19",
+  "original_CentOS_build_reproduced": false
+}

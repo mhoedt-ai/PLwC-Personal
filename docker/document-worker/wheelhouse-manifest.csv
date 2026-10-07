@@ -1,0 +1,20 @@
+package,version,filename,sha256,python_tag,abi_tag,platform_tag,source
+chardet,7.4.3,chardet-7.4.3-py3-none-any.whl,1173b74051570cf08099d7429d92e4882d375ad4217f92a6e5240ccfb26f231e,py3,none,any,vendored
+defusedxml,0.7.1,defusedxml-0.7.1-py2.py3-none-any.whl,a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61,py2,none,any,pip download
+et-xmlfile,2.0.0,et_xmlfile-2.0.0-py3-none-any.whl,7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa,py3,none,any,pip download
+lxml,6.1.0,lxml-6.1.0-cp312-cp312-linux_x86_64.whl,e258ff2edd61d72d1e0c746dbe2c53ee4b9f874d66eb83cbbca0c6b643eefe7e,cp312,cp312,linux_x86_64,vendored
+numpy,2.2.6,numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl,fd83c01228a688733f1ded5201c678f0c53ecc1006ffbc404db9f7a899ac6249,cp312,cp312,manylinux_2_17_x86_64,pip download
+odfpy,1.4.1,odfpy-1.4.1-py2.py3-none-any.whl,47943c88ca1ce11e2dd37f3629752680f4332f381b695c3cc1fbbdd322fae313,py2,none,any,vendored
+openpyxl,3.1.5,openpyxl-3.1.5-py2.py3-none-any.whl,5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2,py2,none,any,pip download
+pandas,2.2.3,pandas-2.2.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl,fffb8ae78d8af97f849404f21411c95062db1496aeb3e56f146f0355c9989319,cp312,cp312,manylinux_2_17_x86_64,pip download
+pillow,12.3.0,pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl,78cb2c6865a35ab8ff8b75fd122f6033b92a62c82801110e48ddd6c936a45d91,cp312,cp312,manylinux_2_27_x86_64,pip download
+pypdf,6.18.0,pypdf-6.18.0-py3-none-any.whl,05b762b77bcb9dcb4a7c91fcf5dded585b25bee7269ab3d3001d7c55fa1b324b,py3,none,any,pip download
+python-dateutil,2.9.0.post0,python_dateutil-2.9.0.post0-py2.py3-none-any.whl,a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427,py2,none,any,pip download
+python-docx,1.1.2,python_docx-1.1.2-py3-none-any.whl,08c20d6058916fb19853fcf080f7f42b6270d89eac9fa5f8c15f691c0017fabe,py3,none,any,pip download
+python-pptx,1.0.2,python_pptx-1.0.2-py3-none-any.whl,160838e0b8565a8b1f67947675886e9fea18aa5e795db7ae531606d68e785cba,py3,none,any,pip download
+pytz,2026.2,pytz-2026.2-py2.py3-none-any.whl,04156e608bee23d3792fd45c94ae47fae1036688e75032eea2e3bf0323d1f126,py2,none,any,pip download
+reportlab,4.2.2,reportlab-4.2.2-py3-none-any.whl,57ab146c68055b9e67f9cd4fc1b76b99e80af85e18a80c5ebbcf953d69554a40,py3,none,any,vendored
+six,1.17.0,six-1.17.0-py2.py3-none-any.whl,4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274,py2,none,any,pip download
+typing-extensions,4.15.0,typing_extensions-4.15.0-py3-none-any.whl,f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548,py3,none,any,pip download
+tzdata,2026.2,tzdata-2026.2-py2.py3-none-any.whl,bbe9af844f658da81a5f95019480da3a89415801f6cc966806612cc7169bffe7,py2,none,any,pip download
+xlsxwriter,3.2.9,xlsxwriter-3.2.9-py3-none-any.whl,9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3,py3,none,any,pip download

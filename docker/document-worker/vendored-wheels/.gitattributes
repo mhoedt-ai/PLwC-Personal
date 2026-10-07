@@ -1,0 +1,3 @@
+*.whl -text
+README.md -text
+chardet-7.4.3-py3-none-any.whl -text

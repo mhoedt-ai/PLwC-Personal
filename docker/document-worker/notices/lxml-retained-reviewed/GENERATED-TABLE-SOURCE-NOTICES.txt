@@ -1,0 +1,219 @@
+PLwC: GNU libiconv 1.18 generated alias, canonical and flag tables
+
+The thirty supplied table headers and five gperf inputs were regenerated
+byte-for-byte from the exact GNU libiconv 1.18 preferred sources. The actual
+compiler dependency capture binds 244 source inputs: 237 previously reviewed
+core C/header files and seven separately reviewed encoding definition files.
+This supplement selects LGPL 2.1 for the original LGPL 2.1-or-later input
+grants; original copyright and permissions are preserved below. The complete
+LGPL 2.1 text and other original library notices remain alongside this file.
+
+GNU gperf is a build tool. The official output-copyright policy says that its
+GPL does not automatically apply to generated output; input copyright and
+permissions govern output. This review binds actual input grants and executed
+regeneration and does not use that policy to waive either requirement.
+
+The release gperf 3.2 source generated five different template headers, while
+all lookup/input data agreed. The unmodified historical GNU gperf C/C++ tree
+at commit 09844ce4ca3d5975469640cea9c5414d5c0baa44, with five explicitly bound
+auxiliary files from the official 3.2 archive, generated all thirty original
+headers exactly. This demonstrates an available compatible source generator;
+it does not identify the generator binary/commit used by the original author.
+Generator sources and full tool licenses are retained in the source supplement.
+
+Only this bounded source/file subset is covered. Seven original lxml native
+binaries, full archive/tool/test/build-file grants and final runtime/source
+collection approval remain separate G3 tasks. G3 HOLD; G4 not opened.
+
+
+=== lib/encodings.def ===
+/* Copyright (C) 1999-2011 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_aix.def ===
+/* Copyright (C) 2000-2002, 2008 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_dos.def ===
+/* Copyright (C) 2001-2002 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_extra.def ===
+/* Copyright (C) 2002, 2005, 2008 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_local.def ===
+/* Copyright (C) 2000-2001 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_osf1.def ===
+/* Copyright (C) 2001, 2008 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+
+=== lib/encodings_zos.def ===
+/* Copyright (C) 2022 Free Software Foundation, Inc.
+   This file is part of the GNU LIBICONV Library.
+
+   The GNU LIBICONV Library is free software; you can redistribute it
+   and/or modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either version 2.1
+   of the License, or (at your option) any later version.
+
+   The GNU LIBICONV Library is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU LIBICONV Library; see the file COPYING.LIB.
+   If not, see <https://www.gnu.org/licenses/>.  */
+
+Bound table: lib/canonical_syssolaris.h; SHA-256 5de2c56abb7c2b047f76f13be9b92269e3bbf204d941d2d4304a68993fb765f6
+
+Bound table: lib/canonical_syshpux.h; SHA-256 7a8a86113b9fb79c64f63f6b8e778f978b5f095336d83a214ef522a0b9e213a5
+
+Bound table: lib/canonical_zos.h; SHA-256 64c3139602089bfe708cf4e73fa391ce5bd5842074fa99a42825a40cffa039d6
+
+Bound table: lib/aliases_osf1_sysosf1.h; SHA-256 2a4ebd3f229b62b6a078bab1b861200f623a67b6aad4628692ab3c7dc256d459
+
+Bound table: lib/canonical_sysosf1.h; SHA-256 a8c13c8615599e3041b78b458062f64f9ee7d183ca59797b608a958c4adfee6d
+
+Bound table: lib/canonical_aix.h; SHA-256 94677eeb18a11dc511a24c957147fd5b4b3c04205bc102143acaaacb1a7591f6
+
+Bound table: lib/canonical_local_syshpux.h; SHA-256 a7a0ea88d8fbbaebc33c3f0975b093f67bc7cd7e24d173da0a66b8d350563a57
+
+Bound table: lib/aliases_aix.h; SHA-256 ac53cfeeb46f33289f46397dd953935c0b6640b373b837aa1a7c77970eb10bc9
+
+Bound table: lib/canonical_extra.h; SHA-256 95df3558cfeff0513a89b81cab83b242cd676441fb7ac8022deaab9c3d13efbe
+
+Bound table: lib/canonical_osf1_sysosf1.h; SHA-256 7a58aeb4de9c251c0e0b7b7306b9cbf21ab474f4f75d3e11e0663e2f162f92bd
+
+Bound table: lib/canonical_local.h; SHA-256 e5008e2a29278bd734ea7c8fa3310a19b6ad6d48338fc34724a65bd89951dcb2
+
+Bound table: lib/canonical_local_sysosf1.h; SHA-256 d2f5853fe3230b94095a987b572a2ec3ed96d975cfca61e72ab6656c5c1140d5
+
+Bound table: lib/canonical_dos.h; SHA-256 093605c9893bc1847809b670572502a2becf531341e0b18f510829c262d4da4c
+
+Bound table: lib/canonical.h; SHA-256 163bdc3c0c66000ab9c3801c2c502042dc5150783ed9df71890fd615049c7b95
+
+Bound table: lib/aliases_sysosf1.h; SHA-256 be0bcce86c3967aeb7a5af35c464e54dfb4086faf4ca46749d0e3cc8974d2a58
+
+Bound table: lib/canonical_aix_sysaix.h; SHA-256 254b9138350cb0336eaa9b64ffbb6b16d51572816e123e9c5d66d76f3b897a41
+
+Bound table: lib/canonical_sysaix.h; SHA-256 be652bf11facdfc86b659075ddb9ceebe7c6ef1ed2f64c25eaca2131f224ecb3
+
+Bound table: lib/aliases_dos.h; SHA-256 85082c346eb54b52de45467aa14341b14a5d40eae7751a3e18d05a4412e791f9
+
+Bound table: lib/flags.h; SHA-256 0c34f567c87787c69d426222c3b50b22ed6276bd3470499050ffe3cf302ce811
+
+Bound table: lib/aliases_sysaix.h; SHA-256 17162a6456f31f2c4a163d697491d47c219a89cba5c7a53652d051b28ebe2d62
+
+Bound table: lib/aliases.h; SHA-256 a95fde14d7e1f76c6d2f42c5621abb28f2ffd88844f3bddf9ce88ad5185a054b
+
+Bound table: lib/aliases_aix_sysaix.h; SHA-256 29a873bcf6ebbd3cefb7b46388839c7d3d13282b83d738491fa515a22bba0b8d
+
+Bound table: lib/canonical_local_syssolaris.h; SHA-256 666c8c867a6f7497031d54460f8580e6182540debe2b8d76525a14517d5fbac6
+
+Bound table: lib/aliases_extra.h; SHA-256 bf22f592d4d0584c8a96372cd5b0dd74226020b8e6c5e9511c0baf036b6a67c1
+
+Bound table: lib/aliases_syshpux.h; SHA-256 7537246d8f424efb29d543a9a3b28856e6172a6a3e299b329fb03b63909d9ad6
+
+Bound table: lib/aliases_syssolaris.h; SHA-256 ef7a54b3a9bb7c90cf2ee840471560af7c96a13f1dfe4b14ff710e3a0f13e2b0
+
+Bound table: lib/aliases_zos.h; SHA-256 6967ff6d5fdc8cab68c5a6478924eef93f1d0b9a2b26ee5e2f098a4c590533a5
+
+Bound table: lib/aliases_osf1.h; SHA-256 63310417b115b41cc79eeda321a706d16b4105c2164b8d70199de773b3789fea
+
+Bound table: lib/canonical_local_sysaix.h; SHA-256 6973be9c8a60d8916351442cffd963feb0bec7c98fad6c6d57ddb041755fe0a0
+
+Bound table: lib/canonical_osf1.h; SHA-256 ec93bf9ed1aedfcec6b832b6b9ced18bce4262cdf0039563fbeffad7d138506c

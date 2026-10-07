@@ -1,0 +1,818 @@
+from __future__ import annotations
+
+import configparser
+import hashlib
+import json
+import os
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from src.plwc_gateway.installation import doctor as installation_doctor
+from src.plwc_gateway.installation import installer_state
+from src.plwc_gateway.installation.doctor import InstallationDoctor
+from src.plwc_gateway.installation.installer_state import (
+    INSTALLER_MANAGED_CONFIG_PATHS,
+    InstallerStateEngine,
+    InstallerStateError,
+)
+
+
+EXTENSION_ID = "nlogfcafjdfdoknpkbehjgihpafpipdb"
+
+
+def _write(path: Path, content: bytes | str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if isinstance(content, bytes):
+        path.write_bytes(content)
+    else:
+        path.write_text(content, encoding="utf-8")
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _engine(tmp_path: Path) -> tuple[InstallerStateEngine, dict[str, Path]]:
+    root = tmp_path / "PLwC"
+    paths = {
+        "root": root,
+        "app": root / "app",
+        "gateway": root / "app" / "gateway",
+        "bridge": root / "app" / "bridge",
+        "workspace": root / "workspace",
+        "profiles": root / "profiles",
+        "config": root / "config",
+        "state": root / "state",
+        "logs": root / "logs",
+        "backups": root / "profile_backups",
+        "selection": root / "config" / "installer" / "selection.ini",
+    }
+    engine = InstallerStateEngine(
+        root,
+        app_root=paths["app"],
+        gateway_root=paths["gateway"],
+        bridge_root=paths["bridge"],
+        workspace_root=paths["workspace"],
+        profile_root=paths["profiles"],
+        config_root=paths["config"],
+        state_root=paths["state"],
+        logs_root=paths["logs"],
+        backups_root=paths["backups"],
+    )
+    return engine, paths
+
+
+def _system_facts(paths: dict[str, Path], *, foreign: bool = False) -> dict[str, object]:
+    launcher = paths["bridge"] / "native" / "bin" / "plwc-chat-bridge-launcher.exe"
+    manifest = paths["config"] / "native-messaging" / "plwc.chat_bridge.launcher.json"
+    facts: dict[str, object] = {
+        "available": True,
+        "native_messaging": {
+            browser: {"registered": True, "manifest": str(manifest)}
+            for browser in ("chrome", "edge", "brave")
+        },
+        "processes": [],
+        "port_3007": [],
+        "scheduled_tasks": [],
+        "shortcuts": [
+            {
+                "path": str(paths["root"] / "Startup" / "PLwC Chat Bridge.lnk"),
+                "exists": True,
+                "target": str(launcher),
+                "arguments": "--start --delay-seconds 20 --lang de",
+            },
+            {
+                "path": str(paths["root"] / "Desktop" / "PLwC-Konfiguration.lnk"),
+                "exists": True,
+                "target": str(paths["root"] / "Python" / "pythonw.exe"),
+                "arguments": f'"{paths["app"] / "configuration" / "plwc-config.py"}" --no-browser',
+            },
+        ],
+    }
+    if foreign:
+        facts["processes"] = [
+            {
+                "ProcessId": 8123,
+                "Name": "foreign.exe",
+                "ExecutablePath": str(paths["root"].parent / "Foreign" / "foreign.exe"),
+                "CommandLine": "foreign.exe --listen 3007",
+            }
+        ]
+        facts["port_3007"] = [{"LocalPort": 3007, "OwningProcess": 8123}]
+    return facts
+
+
+def test_targeted_process_probe_recovers_port_owner_missing_from_broad_inventory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    facts: dict[str, object] = {
+        "processes": [],
+        "port_3007": [{"LocalPort": 3007, "OwningProcess": 13440}],
+        "probe_status": {"processes": True, "port_3007": True},
+        "errors": [],
+    }
+    observed_scripts: list[str] = []
+
+    def targeted(script: str, *, timeout_seconds: int) -> dict[str, object]:
+        observed_scripts.append(script)
+        assert timeout_seconds == 7
+        return {
+            "processes": [
+                {
+                    "ProcessId": 13440,
+                    "Name": "node.exe",
+                    "ExecutablePath": r"C:\Program Files\nodejs\node.exe",
+                    "CommandLine": r'node.exe "C:\Users\secur\AppData\Roaming\PLwC\app\bridge\bridge\dist\src\index.js"',
+                }
+            ]
+        }
+
+    monkeypatch.setattr(installation_doctor, "_run_powershell_json", targeted)
+    installation_doctor._recover_missing_port_owner_processes(facts, timeout_seconds=7)
+
+    assert len(observed_scripts) == 1
+    assert "ProcessId = $ownerId" in observed_scripts[0]
+    assert facts["probe_status"]["processes_targeted"] is True  # type: ignore[index]
+    assert facts["errors"] == []
+    assert facts["processes"][0]["ProcessId"] == 13440  # type: ignore[index]
+
+
+def test_powershell_json_probe_retries_empty_success_through_stdin(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[list[str], str | None]] = []
+
+    def run(command: list[str], **kwargs: object):
+        calls.append((command, kwargs.get("input") if isinstance(kwargs.get("input"), str) else None))
+        if len(calls) == 1:
+            return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+        return subprocess.CompletedProcess(command, 0, stdout='{"processes":[]}', stderr="")
+
+    monkeypatch.setattr(installation_doctor.subprocess, "run", run)
+    result = installation_doctor._run_powershell_json("read-only-probe", timeout_seconds=4)
+
+    assert result == {"processes": []}
+    assert len(calls) == 2
+    assert calls[0][0][-1] == "read-only-probe"
+    assert calls[0][1] is None
+    assert calls[1][0][-1] == "-"
+    assert calls[1][1] == "read-only-probe"
+
+
+def test_powershell_json_probe_uses_temp_result_after_two_empty_successes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[list[str], str | None]] = []
+
+    def run(command: list[str], **kwargs: object):
+        environment = kwargs.get("env") if isinstance(kwargs.get("env"), dict) else None
+        calls.append((command, environment.get("PLWC_WINDOWS_PROBE_OUTPUT") if environment else None))
+        if len(calls) < 3:
+            return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+        assert environment is not None
+        output = Path(environment["PLWC_WINDOWS_PROBE_OUTPUT"])
+        output.write_text('{"processes":[{"ProcessId":42}]}', encoding="utf-8")
+        return subprocess.CompletedProcess(command, 0, stdout=None, stderr="")
+
+    monkeypatch.setattr(installation_doctor.subprocess, "run", run)
+    result = installation_doctor._run_powershell_json("read-only-probe", timeout_seconds=4)
+
+    assert result == {"processes": [{"ProcessId": 42}]}
+    assert len(calls) == 3
+    assert calls[0][0][-1] == "read-only-probe"
+    assert calls[1][0][-1] == "-"
+    assert calls[2][0][-2].casefold() == "-file"
+    assert calls[2][1] is not None
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows PowerShell file-result contract")
+def test_powershell_json_temp_result_executes_on_windows() -> None:
+    return_code, stdout, stderr = installation_doctor._run_powershell_json_via_temp_files(
+        "ConvertTo-Json -InputObject ([pscustomobject]@{probe='ok';items=@(1,2)}) -Compress -Depth 3",
+        timeout_seconds=10,
+    )
+
+    assert return_code == 0, stderr
+    assert json.loads(stdout) == {"probe": "ok", "items": [1, 2]}
+
+
+def test_targeted_process_probe_stays_fail_closed_and_records_diagnostics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    facts: dict[str, object] = {
+        "processes": [],
+        "port_3007": [{"LocalPort": 3007, "OwningProcess": 13440}],
+        "probe_status": {"processes": False, "port_3007": True},
+        "errors": ["powershell.processes: broad query failed"],
+    }
+
+    def blocked(_script: str, *, timeout_seconds: int) -> dict[str, object]:
+        raise ValueError(f"targeted query blocked after {timeout_seconds}s")
+
+    monkeypatch.setattr(installation_doctor, "_run_powershell_json", blocked)
+    installation_doctor._recover_missing_port_owner_processes(facts, timeout_seconds=5)
+
+    assert facts["processes"] == []
+    assert facts["probe_status"]["processes_targeted"] is False  # type: ignore[index]
+    assert facts["errors"] == [
+        "powershell.processes: broad query failed",
+        "powershell.processes_targeted: targeted query blocked after 5s",
+    ]
+
+
+def test_postflight_fails_closed_when_windows_fact_probe_is_incomplete(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    manifest = _install_payload(paths)
+    preflight = engine.preflight(
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+    )
+    facts = _system_facts(paths)
+    facts["probe_status"] = {
+        "shortcuts": True,
+        "processes": False,
+        "port_3007": True,
+        "scheduled_tasks": True,
+    }
+    facts["errors"] = ["powershell.processes: timed out"]
+
+    report = engine.postflight(
+        preflight=preflight,
+        payload_manifest_path=manifest,
+        selection_path=paths["selection"],
+        system_facts=facts,
+        expected_extension_id=EXTENSION_ID,
+    )
+    checks = {check["id"]: check for check in report["checks"]}
+
+    assert report["ok"] is False
+    assert checks["port.3007_owner"]["ok"] is False
+    assert checks["legacy.processes"]["ok"] is False
+    assert checks["scheduled_tasks.legacy"]["ok"] is True
+    assert checks["port.3007_owner"]["evidence"] == ["powershell.processes: timed out"]
+
+
+def test_current_gateway_process_is_proven_and_planned_for_stop(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    _write_selection(paths)
+    facts = _system_facts(paths)
+    gateway_pid = 7351
+    facts["processes"] = [
+        {
+            "ProcessId": gateway_pid,
+            "Name": "python.exe",
+            "ExecutablePath": r"C:\Program Files\Python\python.exe",
+            "CommandLine": f'python.exe "{paths["gateway"] / "server.py"}"',
+        }
+    ]
+
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    attribution = preflight["facts"]["attribution"]["processes"]
+    plan = engine.plan(preflight)
+
+    assert attribution == [
+        {
+            "pid": gateway_pid,
+            "classification": "proven",
+            "executable": r"C:\Program Files\Python\python.exe",
+            "command_line": f'python.exe "{paths["gateway"] / "server.py"}"',
+        }
+    ]
+    assert any(
+        action.get("type") == "stop_proven_plwc_process" and action.get("pid") == gateway_pid
+        for action in plan["actions"]
+    )
+
+
+def _write_selection(paths: dict[str, Path], *, stored_bridge: Path | None = None) -> None:
+    parser = configparser.ConfigParser(interpolation=None)
+    parser.optionxform = str
+    parser["PLwC"] = {
+        "AppPath": str(paths["app"]),
+        "GatewayPath": str(paths["gateway"]),
+        "BridgePath": str(stored_bridge or paths["bridge"]),
+        "WorkspacePath": str(paths["workspace"]),
+        "ProfilesPath": str(paths["profiles"]),
+        "ConfigPath": str(paths["config"]),
+        "StatePath": str(paths["state"]),
+        "LogsPath": str(paths["logs"]),
+        "BackupsPath": str(paths["backups"]),
+    }
+    parser["Components"] = {
+        "ClaudeMCPB": "false",
+        "CodexSTDIO": "false",
+        "OdysseusSTDIO": "false",
+        "ChatBridge": "true",
+    }
+    parser["BuildIdentity"] = {
+        "InstallerRevision": "installer-r27",
+        "SetupExeSha256": "a" * 64,
+    }
+    paths["selection"].parent.mkdir(parents=True, exist_ok=True)
+    with paths["selection"].open("w", encoding="utf-8", newline="\n") as handle:
+        parser.write(handle)
+
+
+def test_preflight_reads_r25_windows_ansi_selection_without_partial_parser_state(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    legacy_bridge = paths["app"] / "chat-bridge-1.0.0"
+    legacy_bridge.mkdir(parents=True)
+    paths["selection"].parent.mkdir(parents=True, exist_ok=True)
+    content = (
+        "[PLwC]\r\n"
+        f"BridgePath={legacy_bridge}\r\n"
+        f"WorkspacePath={paths['root']}\\Die Tagebücher\r\n"
+        "[BuildIdentity]\r\n"
+        "InstallerRevision=installer-r25\r\n"
+        "[Components]\r\n"
+        "ChatBridge=true\r\n"
+    )
+    paths["selection"].write_bytes(content.encode("cp1252"))
+
+    preflight = engine.preflight(
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+    )
+
+    assert preflight["ok"] is True
+    assert preflight["facts"]["stored_bridge_path"] == str(legacy_bridge)
+    assert preflight["facts"]["legacy_paths"] == [str(legacy_bridge)]
+    assert preflight["facts"]["runtime_identities"]["installer_selection"] == {
+        "InstallerRevision": "installer-r25"
+    }
+
+
+def _install_payload(paths: dict[str, Path]) -> Path:
+    payload_files = {
+        "common/configuration/plwc-config.py": b"print('config')\n",
+        "common/configuration/plwc.ico": b"icon",
+        "gateway/server.py": b"# gateway\n",
+        "gateway/manifest.json": b'{"version":"1.0.0"}\n',
+        "chat-bridge/build-identity.json": b'{"buildId":"plwc-chat-bridge@1.0.0"}\n',
+        "chat-bridge/native/bin/plwc-chat-bridge-launcher.exe": b"launcher",
+        "chat-bridge/bridge/dist/src/index.js": b"bridge",
+        "chat-bridge/config/plwc.example.json": b'{"generated":false}\n',
+    }
+    mappings = {
+        "common": paths["app"],
+        "gateway": paths["gateway"],
+        "chat-bridge": paths["bridge"],
+    }
+    manifest_files: list[dict[str, object]] = []
+    for relative, content in payload_files.items():
+        prefix, suffix = relative.split("/", 1)
+        target = mappings[prefix] / suffix
+        _write(target, content)
+        manifest_files.append({"path": relative, "sha256": _sha256(target), "size": target.stat().st_size})
+    # Setup intentionally creates this file after payload extraction.
+    _write(paths["bridge"] / "config" / "plwc.example.json", '{"generated":true}\n')
+    launcher = paths["bridge"] / "native" / "bin" / "plwc-chat-bridge-launcher.exe"
+    native_manifest = paths["config"] / "native-messaging" / "plwc.chat_bridge.launcher.json"
+    _write(
+        native_manifest,
+        json.dumps(
+            {
+                "name": "plwc.chat_bridge.launcher",
+                "path": str(launcher),
+                "type": "stdio",
+                "allowed_origins": [f"chrome-extension://{EXTENSION_ID}/"],
+            }
+        ),
+    )
+    _write(
+        paths["state"] / "chat-bridge" / "launcher-last-result.json",
+        json.dumps({"ok": True, "toolCount": 8, "buildId": "plwc-chat-bridge@1.0.0"}),
+    )
+    manifest = paths["app"] / "installation" / "payload-manifest.json"
+    _write(
+        manifest,
+        json.dumps(
+            {
+                "schemaVersion": 1,
+                "installer": {"revision": "installer-r27"},
+                "files": manifest_files,
+            }
+        ),
+    )
+    _write_selection(paths)
+    settings_path = paths["config"] / "gateway-settings.json"
+    if settings_path.is_file():
+        shared = json.loads(settings_path.read_text(encoding="utf-8"))
+        shared["settings"]["workspace_path"] = str(paths["workspace"])
+        shared["settings"]["profiles_path"] = str(paths["profiles"])
+        _write(settings_path, json.dumps(shared))
+    return manifest
+
+
+def _preexisting_user_data(paths: dict[str, Path]) -> None:
+    _write(paths["profiles"] / "FAUN" / "PERSONA.md", "kept profile\n")
+    _write(paths["config"] / "user-policy.yaml", "keep: true\n")
+    _write(
+        paths["config"] / "native-messaging" / "plwc.chat_bridge.launcher.json",
+        '{"path":"legacy-bridge-launcher.exe"}\n',
+    )
+    _write(
+        paths["root"] / "config" / "gateway-settings.json",
+        json.dumps(
+            {
+                "schema_version": 1,
+                "settings": {"active_profile_name": "FAUN", "workspace_path": str(paths["workspace"])},
+                "updated_at": "old",
+                "updated_by": "user",
+            }
+        ),
+    )
+
+
+@pytest.mark.parametrize("scenario", ["clean", "r25_update", "dirty_migration"])
+def test_clean_update_and_dirty_migration_share_the_hard_postflight(tmp_path: Path, scenario: str) -> None:
+    engine, paths = _engine(tmp_path)
+    _preexisting_user_data(paths)
+    legacy = paths["app"] / "chat-bridge"
+    if scenario == "r25_update":
+        _write(paths["bridge"] / "old-runtime.txt", "r25")
+        _write_selection(paths)
+    elif scenario == "dirty_migration":
+        _write(legacy / "old-runtime.txt", "legacy")
+        _write_selection(paths, stored_bridge=legacy)
+
+    facts = _system_facts(paths)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    plan = engine.plan(preflight)
+    assert plan["ok"] is True
+    prepared = engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=facts,
+    )
+    manifest = _install_payload(paths)
+    report = engine.postflight(
+        preflight=preflight,
+        payload_manifest_path=manifest,
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+        expected_extension_id=EXTENSION_ID,
+    )
+
+    assert report["ok"] is True, report["checks"]
+    assert all(check["ok"] is True for check in report["checks"])
+    doctor_report = InstallationDoctor(
+        paths["root"],
+        workspace_root=paths["workspace"],
+        profile_root=paths["profiles"],
+        enable_system_probes=False,
+    ).hard_postflight(system_facts=_system_facts(paths))
+    assert doctor_report is not None and doctor_report["ok"] is True
+    archived = engine.archive_legacy_after_success(plan, report)
+    if scenario == "dirty_migration":
+        assert not legacy.exists()
+        assert len(archived) == 1
+    else:
+        assert archived == []
+    if scenario == "clean":
+        assert prepared["target_backup"] is None
+    else:
+        assert Path(str(prepared["target_backup"])).is_dir()
+
+
+def test_postflight_allows_only_installer_managed_shared_path_migration(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    _preexisting_user_data(paths)
+    settings_path = paths["config"] / "gateway-settings.json"
+    before = json.loads(settings_path.read_text(encoding="utf-8"))
+    before["settings"]["workspace_path"] = str(paths["root"] / "legacy-workspace")
+    before["settings"].pop("profiles_path", None)
+    _write(settings_path, json.dumps(before))
+
+    facts = _system_facts(paths)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    plan = engine.plan(preflight)
+    engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=facts,
+    )
+    manifest = _install_payload(paths)
+    after = json.loads(settings_path.read_text(encoding="utf-8"))
+    after["settings"]["workspace_path"] = str(paths["workspace"])
+    after["settings"]["profiles_path"] = str(paths["profiles"])
+    _write(settings_path, json.dumps(after))
+
+    report = engine.postflight(
+        preflight=preflight,
+        payload_manifest_path=manifest,
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+        expected_extension_id=EXTENSION_ID,
+    )
+
+    config_check = next(check for check in report["checks"] if check["id"] == "user_data.config")
+    assert config_check == {"id": "user_data.config", "ok": True, "evidence": []}
+    assert report["ok"] is True
+
+
+def test_postflight_rejects_non_installer_shared_setting_mutation(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    _preexisting_user_data(paths)
+    facts = _system_facts(paths)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    plan = engine.plan(preflight)
+    engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=facts,
+    )
+    manifest = _install_payload(paths)
+    settings_path = paths["config"] / "gateway-settings.json"
+    after = json.loads(settings_path.read_text(encoding="utf-8"))
+    after["settings"]["profiles_path"] = str(paths["profiles"])
+    after["settings"]["active_profile_name"] = "mutated"
+    _write(settings_path, json.dumps(after))
+
+    report = engine.postflight(
+        preflight=preflight,
+        payload_manifest_path=manifest,
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+        expected_extension_id=EXTENSION_ID,
+    )
+
+    config_check = next(check for check in report["checks"] if check["id"] == "user_data.config")
+    assert config_check["ok"] is False
+    assert config_check["evidence"] == ["gateway-settings.json:settings.active_profile_name"]
+
+
+def test_foreign_port_owner_blocks_without_stopping_any_process(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    engine, paths = _engine(tmp_path)
+    facts = _system_facts(paths, foreign=True)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    plan = engine.plan(preflight)
+    stopped: list[int] = []
+    monkeypatch.setattr("src.plwc_gateway.installation.installer_state.os.kill", lambda pid, _signal: stopped.append(pid))
+
+    assert plan["blocked"] is True
+    assert plan["block_reason"] == "foreign_port_3007_owner"
+    assert preflight["facts"]["attribution"]["processes"][0]["classification"] == "unknown"
+    with pytest.raises(InstallerStateError, match="unverified process"):
+        engine.prepare(
+            plan,
+            confirmed_plan_id=plan["plan_id"],
+            current_preflight=preflight,
+            current_system_facts=facts,
+        )
+    assert stopped == []
+
+
+def test_only_a_proven_legacy_process_is_stopped(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    engine, paths = _engine(tmp_path)
+    legacy = paths["app"] / "chat-bridge"
+    _write(legacy / "bridge" / "dist" / "src" / "index.js", "legacy")
+    _write_selection(paths, stored_bridge=legacy)
+    process = {
+        "ProcessId": 8451,
+        "Name": "node.exe",
+        "ExecutablePath": str(legacy / "node.exe"),
+        "CommandLine": f'node.exe "{legacy / "bridge" / "dist" / "src" / "index.js"}"',
+    }
+    facts = _system_facts(paths)
+    facts["processes"] = [process]
+    facts["port_3007"] = [{"LocalPort": 3007, "OwningProcess": 8451}]
+    stopped: list[int] = []
+    monkeypatch.setattr("src.plwc_gateway.installation.installer_state.os.kill", lambda pid, _signal: stopped.append(pid))
+
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=facts)
+    plan = engine.plan(preflight)
+    assert preflight["facts"]["attribution"]["processes"][0]["classification"] == "proven"
+    assert plan["blocked"] is False
+    engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=facts,
+    )
+    assert stopped == ([8451] if os.name == "nt" else [])
+
+
+def test_windows_process_stop_uses_taskkill_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    commands: list[list[str]] = []
+
+    def denied(_pid: int, _signal: int) -> None:
+        raise PermissionError(13, "Access denied")
+
+    def taskkill(command: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        return subprocess.CompletedProcess(command, 0, "SUCCESS", "")
+
+    monkeypatch.setattr(installer_state.os, "kill", denied)
+    monkeypatch.setattr(installer_state.subprocess, "run", taskkill)
+
+    installer_state._stop_windows_process(8451)
+
+    assert commands == [["taskkill.exe", "/PID", "8451", "/T", "/F"]]
+
+
+def test_windows_process_stop_accepts_only_a_proven_completed_race(monkeypatch: pytest.MonkeyPatch) -> None:
+    def denied(_pid: int, _signal: int) -> None:
+        raise PermissionError(13, "Access denied")
+
+    monkeypatch.setattr(installer_state.os, "kill", denied)
+    monkeypatch.setattr(
+        installer_state.subprocess,
+        "run",
+        lambda command, **_kwargs: subprocess.CompletedProcess(command, 128, "", "not found"),
+    )
+    monkeypatch.setattr(
+        installer_state,
+        "collect_windows_system_facts",
+        lambda **_kwargs: {"processes": [], "probe_status": {"processes": True}},
+    )
+
+    installer_state._stop_windows_process(8451)
+
+
+def test_windows_process_stop_fails_closed_when_pid_remains(monkeypatch: pytest.MonkeyPatch) -> None:
+    def denied(_pid: int, _signal: int) -> None:
+        raise PermissionError(13, "Access denied")
+
+    monkeypatch.setattr(installer_state.os, "kill", denied)
+    monkeypatch.setattr(
+        installer_state.subprocess,
+        "run",
+        lambda command, **_kwargs: subprocess.CompletedProcess(command, 5, "", "access denied"),
+    )
+    monkeypatch.setattr(
+        installer_state,
+        "collect_windows_system_facts",
+        lambda **_kwargs: {
+            "processes": [{"ProcessId": 8451, "Name": "node.exe"}],
+            "probe_status": {"processes": True},
+        },
+    )
+
+    with pytest.raises(InstallerStateError, match="PID 8451 could not be stopped"):
+        installer_state._stop_windows_process(8451)
+
+
+def test_postflight_detects_hash_and_profile_mutation_and_never_allows_archive(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    _preexisting_user_data(paths)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=_system_facts(paths))
+    plan = engine.plan(preflight)
+    engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=_system_facts(paths),
+    )
+    manifest = _install_payload(paths)
+    _write(paths["gateway"] / "server.py", "tampered\n")
+    _write(paths["profiles"] / "FAUN" / "PERSONA.md", "lost\n")
+    report = engine.postflight(
+        preflight=preflight,
+        payload_manifest_path=manifest,
+        selection_path=paths["selection"],
+        system_facts=_system_facts(paths),
+        expected_extension_id=EXTENSION_ID,
+    )
+
+    failures = {check["id"] for check in report["checks"] if check["ok"] is not True}
+    assert report["ok"] is False
+    assert {"payload.hashes", "user_data.profiles"} <= failures
+    with pytest.raises(InstallerStateError, match="only after a successful postflight"):
+        engine.archive_legacy_after_success(plan, report)
+
+
+def test_failed_update_rolls_back_the_complete_application_tree(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    _write(paths["app"] / "configuration" / "old.txt", "r25")
+    _write(paths["bridge"] / "old-runtime.txt", "r25 bridge")
+    _preexisting_user_data(paths)
+    _write_selection(paths, stored_bridge=paths["app"] / "chat-bridge")
+    for relative in (
+        "installer/installation-summary.txt",
+        "clients/codex/plwc-gateway.generated.toml",
+        "clients/odysseus/plwc-gateway.generated.json",
+    ):
+        _write(paths["config"] / relative, f"r25:{relative}\n")
+    original_config = {
+        relative: (paths["config"] / relative).read_bytes()
+        for relative in INSTALLER_MANAGED_CONFIG_PATHS
+    }
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=_system_facts(paths))
+    plan = engine.plan(preflight)
+    prepared = engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=_system_facts(paths),
+    )
+    _install_payload(paths)
+    for relative in INSTALLER_MANAGED_CONFIG_PATHS:
+        _write(paths["config"] / relative, f"failed-r27:{relative}\n")
+    result = engine.rollback(prepared)
+
+    assert result["result"] == "restored"
+    assert (paths["app"] / "configuration" / "old.txt").read_text(encoding="utf-8") == "r25"
+    assert (paths["bridge"] / "old-runtime.txt").read_text(encoding="utf-8") == "r25 bridge"
+    assert not (paths["app"] / "installation" / "payload-manifest.json").exists()
+    assert result["quarantine"] is not None
+    assert {
+        relative: (paths["config"] / relative).read_bytes()
+        for relative in INSTALLER_MANAGED_CONFIG_PATHS
+    } == original_config
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows process-tree rollback contract")
+def test_rollback_stops_only_the_proven_target_bridge_before_atomic_restore(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    engine, paths = _engine(tmp_path)
+    _write(paths["app"] / "configuration" / "old.txt", "r25")
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=_system_facts(paths))
+    plan = engine.plan(preflight)
+    prepared = engine.prepare(
+        plan,
+        confirmed_plan_id=plan["plan_id"],
+        current_preflight=preflight,
+        current_system_facts=_system_facts(paths),
+    )
+    _install_payload(paths)
+    target_pid = 8452
+    foreign_pid = 8453
+    gateway_pid = 8454
+    facts = _system_facts(paths)
+    facts["processes"] = [
+        {
+            "ProcessId": target_pid,
+            "Name": "node.exe",
+            "ExecutablePath": r"C:\Program Files\nodejs\node.exe",
+            "CommandLine": f'node.exe "{paths["bridge"] / "bridge" / "dist" / "src" / "index.js"}"',
+        },
+        {
+            "ProcessId": foreign_pid,
+            "Name": "foreign.exe",
+            "ExecutablePath": str(paths["root"].parent / "Foreign" / "foreign.exe"),
+            "CommandLine": "foreign.exe --listen 3008",
+        },
+        {
+            "ProcessId": gateway_pid,
+            "Name": "python.exe",
+            "ExecutablePath": r"C:\Program Files\Python\python.exe",
+            "CommandLine": f'python.exe "{paths["gateway"] / "server.py"}"',
+        },
+    ]
+    facts["port_3007"] = [{"LocalPort": 3007, "OwningProcess": target_pid}]
+    calls: list[list[str]] = []
+
+    def fake_run(arguments: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(arguments)
+        return subprocess.CompletedProcess(arguments, 0, "SUCCESS", "")
+
+    monkeypatch.setattr("src.plwc_gateway.installation.installer_state.subprocess.run", fake_run)
+    result = engine.rollback(prepared, system_facts=facts)
+
+    assert calls == [
+        ["taskkill.exe", "/PID", str(target_pid), "/T", "/F"],
+        ["taskkill.exe", "/PID", str(gateway_pid), "/T", "/F"],
+    ]
+    assert result["stopped_processes"] == [target_pid, gateway_pid]
+    assert result["result"] == "restored"
+    assert (paths["app"] / "configuration" / "old.txt").read_text(encoding="utf-8") == "r25"
+
+
+def test_plan_id_and_preflight_snapshot_are_immutable(tmp_path: Path) -> None:
+    engine, paths = _engine(tmp_path)
+    preflight = engine.preflight(selection_path=paths["selection"], system_facts=_system_facts(paths))
+    plan = engine.plan(preflight)
+    plan["actions"].append({"type": "delete_unknown_directory", "path": str(paths["root"] / "unknown")})
+
+    with pytest.raises(InstallerStateError, match="changed after preflight"):
+        engine.prepare(
+            plan,
+            confirmed_plan_id=plan["plan_id"],
+            current_preflight=preflight,
+            current_system_facts=_system_facts(paths),
+        )
+
+
+def test_unsafe_overlapping_runtime_and_data_roots_are_rejected(tmp_path: Path) -> None:
+    root = tmp_path / "PLwC"
+    with pytest.raises(InstallerStateError, match="data root must not overlap"):
+        InstallerStateEngine(
+            root,
+            app_root=root / "app",
+            gateway_root=root / "app" / "gateway",
+            bridge_root=root / "app" / "bridge",
+            workspace_root=root / "app" / "workspace",
+            profile_root=root / "profiles",
+            config_root=root / "config",
+            state_root=root / "state",
+            logs_root=root / "logs",
+            backups_root=root / "profile_backups",
+        )

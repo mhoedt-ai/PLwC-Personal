@@ -1,0 +1,599 @@
+{
+  "schema_version": "1.0.0",
+  "package": "odfpy",
+  "version": "1.4.1",
+  "source_archive_sha256": "db766a6e59c5103212f3cc92ec8dd50a0f3a02790233ed0b52148b70d3c438ec",
+  "files": [
+    {
+      "source_path": "csv2ods/csv2ods",
+      "version": "1.4.1",
+      "source_sha256": "173ffdbb4b5e8e22005d98e5ff909f8236ecc4a1b9f048546aebae1b4272d815",
+      "copyright_as_supplied": [
+        "Copyright (C) 2008 Agustin Henze -> agustinhenze at gmail.com"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "mailodf/mailodf",
+      "version": "1.4.1",
+      "source_sha256": "8b64de3beaf7a3da546311cf510756d5ccfa31fec34d42c45f67aa17c496d645",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odf/__init__.py",
+      "version": "1.4.1",
+      "source_sha256": "f201e6954db0252e813ae3119cb302f5ec97fd2b4b3cde65ac472bed3d8f6df5",
+      "copyright_as_supplied": [
+        "Copyright (C) 2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odf/anim.py",
+      "version": "1.4.1",
+      "source_sha256": "ed476a97b50f43e1306465c4bd8038053cfed4fc2062264a07604e6a87dcd647",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/attrconverters.py",
+      "version": "1.4.1",
+      "source_sha256": "9e17c307b44638b8feba3efe91f749defc06b5b84cfdf26c75e6dbd4faeb2051",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/chart.py",
+      "version": "1.4.1",
+      "source_sha256": "f1651183541dff4c8d1ca28ab20ebb31187b802cd4b19b74b0b853c9343c8c6e",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/config.py",
+      "version": "1.4.1",
+      "source_sha256": "4051e905461d692517e057415bcafb80aeab0abf0c85ad501dba350f92e6d26a",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/dc.py",
+      "version": "1.4.1",
+      "source_sha256": "042603b261dc47bec7c15a65a25ef6675a8063aa798797d49721a54f9c070c56",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/dr3d.py",
+      "version": "1.4.1",
+      "source_sha256": "7b68ac304fabdb72ec248f35fe0aace5f1e0d21e68365f9f2897a9a4af3e39af",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/draw.py",
+      "version": "1.4.1",
+      "source_sha256": "83e73eb19bb49062042041ff115e6c41d406b20eb58496d588f340b0757cc9a6",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/easyliststyle.py",
+      "version": "1.4.1",
+      "source_sha256": "de1081d9b86588c57b3989d27c4a0ca9bc2db5181e7bb07eb78144d17479b4ee",
+      "copyright_as_supplied": [
+        "Copyright (C) 2008 J. David Eisenberg"
+      ],
+      "license_concluded": "GPL-2.0-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "GPL-LICENSE-2.txt"
+      ],
+      "review_basis": "Retain the specific GPL 2-or-later grant; no Apache alternative is inferred from general package metadata."
+    },
+    {
+      "source_path": "odf/element.py",
+      "version": "1.4.1",
+      "source_sha256": "6b31c4c4f958eddb8f97ad8a3a1f5674185e4c7dc61b5caef28fa4a41d5a9617",
+      "copyright_as_supplied": [
+        "Copyright (C) 2007-2010 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later AND PSF-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt",
+        "/usr/local/lib/python3.12/LICENSE.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header. The additional copied xml.dom.minidom notice and the complete installed CPython license are retained."
+    },
+    {
+      "source_path": "odf/elementtypes.py",
+      "version": "1.4.1",
+      "source_sha256": "e4ec9bbb192914c43073b97aad409ecc0a6341ab1ade4a90af04bc358363c549",
+      "copyright_as_supplied": [
+        "Copyright (C) 2008 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/form.py",
+      "version": "1.4.1",
+      "source_sha256": "66045c9cd9ea23c1cb4bf39580245a16dfbd7ec6a098736919983d17713cf5ca",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/grammar.py",
+      "version": "1.4.1",
+      "source_sha256": "822c219d07e4d928901c80ac66182d87741dbde139c7fea74640f18dba222232",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency",
+        "Copyright (c) OASIS Open 2002-2011. All Rights Reserved."
+      ],
+      "license_concluded": "LGPL-2.1-or-later AND LicenseRef-ODFPy-OASIS-ODF-1.2",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt",
+        "OASIS-ODF-1.2-NOTICE.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header. The complete OASIS schema notice remains attached to the generated data."
+    },
+    {
+      "source_path": "odf/load.py",
+      "version": "1.4.1",
+      "source_sha256": "13df81cb7c4be8933b3c4a40c2554e36c7664ee65c265d78633e467204686caa",
+      "copyright_as_supplied": [
+        "Copyright (C) 2007-2008 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/manifest.py",
+      "version": "1.4.1",
+      "source_sha256": "99261e5efefc7bbccf02efee03ad20097391786a48b27f7aea09b906440b528d",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/math.py",
+      "version": "1.4.1",
+      "source_sha256": "f4ee513eb4844f9d2d6aba1aa1889aeb77612c6b7913ffeb616648746124f5d8",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/meta.py",
+      "version": "1.4.1",
+      "source_sha256": "8c3254c90b335659d4709f9134f54f272e725e83a35df22557ef855859b9a63b",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/namespaces.py",
+      "version": "1.4.1",
+      "source_sha256": "c2a79d2aa963a25d14aaa41558ded07977d0a47768a8853732b4bc03bdd06aac",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/number.py",
+      "version": "1.4.1",
+      "source_sha256": "62a50fa73a7681a712ffce0efae51429600ed12eb88563bf7ea8352529ac1ef8",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/odf2moinmoin.py",
+      "version": "1.4.1",
+      "source_sha256": "abaffc8926644e183c3c67c6038872de0e542a06f8b8b454aae46fda6cdff6b4",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2008 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/odf2xhtml.py",
+      "version": "1.4.1",
+      "source_sha256": "7794f97a57caaf354062c29092f2e976cfc01ab1cc58781ec73a6454fa605426",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2010 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/odfmanifest.py",
+      "version": "1.4.1",
+      "source_sha256": "5073cbf380a5b90864420ae819b09af7b667e9c939e444140901efc3cb9313c8",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/office.py",
+      "version": "1.4.1",
+      "source_sha256": "3d01b07099034e0b846c419c0ff6e32c24fd83ee86b029cc9ae4d01087459d09",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/opendocument.py",
+      "version": "1.4.1",
+      "source_sha256": "e727cdb1ac02ea97dd7517247ffdd59c2d5976060e42311db2757d416eaff4fa",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2010 Søren Roug, European Environment Agency",
+        "Copyright (C) 2014 Georges Khaznadar <georgesk@debian.org>"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/presentation.py",
+      "version": "1.4.1",
+      "source_sha256": "22463c3b24d7ae0e1f6e4594758347dde8b95374a6ea932cbba47c304b6f2ad9",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/script.py",
+      "version": "1.4.1",
+      "source_sha256": "82af38b1b5fc665e3c5fff2b61468b1c8a0881950b85118798208f7be5fde7c3",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/style.py",
+      "version": "1.4.1",
+      "source_sha256": "089e44585ba71ef63f31813f77c2cd9e097dafdfad9207099b968eff078e3769",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/svg.py",
+      "version": "1.4.1",
+      "source_sha256": "d6497247167617df0c607a7961af7869a54aff670dbafa54c2dc5fcb8320b6a6",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/table.py",
+      "version": "1.4.1",
+      "source_sha256": "1e340350d7b797160b61399022d3d49a6f954060c6c8cba866d3e16f9652c9f8",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/teletype.py",
+      "version": "1.4.1",
+      "source_sha256": "ccab20ab689475302d9a5db4ef725a0cf6aa8dabee42eec6e1c14e6de570d799",
+      "copyright_as_supplied": [
+        "Copyright (C) 2008 J. David Eisenberg"
+      ],
+      "license_concluded": "GPL-2.0-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "GPL-LICENSE-2.txt"
+      ],
+      "review_basis": "Retain the specific GPL 2-or-later grant; no Apache alternative is inferred from general package metadata."
+    },
+    {
+      "source_path": "odf/text.py",
+      "version": "1.4.1",
+      "source_sha256": "f891c00f580c4458bf9a14d143038e71131edadc1bec55565d0f6f88e587a99b",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2013 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf/thumbnail.py",
+      "version": "1.4.1",
+      "source_sha256": "cb5909245356b860e4680e4ee07e27114f20f42f3954b6bebc0bfeacc5390362",
+      "copyright_as_supplied": [
+        "LibreOffice icon; exact upstream header credits da.libreoffice.org, without a separate named author"
+      ],
+      "license_concluded": "CC-BY-SA-3.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "THUMBNAIL-NOTICE.txt",
+        "CC-BY-SA-3.0.txt"
+      ],
+      "review_basis": "Specific embedded-image notice in the exact upstream file overrides generic project metadata."
+    },
+    {
+      "source_path": "odf/userfield.py",
+      "version": "1.4.1",
+      "source_sha256": "e6ef36b7e5fbf31f1ad9b8dae33d7b7e69143b532891f84a0885c9e35e6fc35f",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2009 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odf/xforms.py",
+      "version": "1.4.1",
+      "source_sha256": "4dc84873a28a691faece3af490cdaeb60fa31646ef4aa55db959f494b7f62df1",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "LGPL-2.1-or-later",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "LGPL-2.1.txt"
+      ],
+      "review_basis": "Specific LGPL 2.1-or-later grant in the exact upstream header."
+    },
+    {
+      "source_path": "odf2mht/odf2mht",
+      "version": "1.4.1",
+      "source_sha256": "1c40e201151afd40a550ac6bed02a1bd42acbcfdeba14d067e8ab1d619bbb426",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odf2xhtml/odf2xhtml",
+      "version": "1.4.1",
+      "source_sha256": "1bc62b1fd82f2f0ba902253e5c1028e255db0dbfcd9c64ae08833d53bcaf3247",
+      "copyright_as_supplied": [
+        "Copyright (C) 2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odf2xml/odf2xml",
+      "version": "1.4.1",
+      "source_sha256": "a3c5e12e9d2941d4ceb72987a6d2d02b977b0b554fee7a53fad1a3d92814843b",
+      "copyright_as_supplied": [
+        "Copyright (C) 2008 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odfimgimport/odfimgimport",
+      "version": "1.4.1",
+      "source_sha256": "f3b48a8cfeca4b72888a51510e49e3637b508aef247c4433028d390936116079",
+      "copyright_as_supplied": [
+        "Copyright (C) 2007-2009 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odflint/odflint",
+      "version": "1.4.1",
+      "source_sha256": "02b69171aa0eb9f9ff1c180ff6a8d16dcea4f8cad1b6730f2289258b4e98e865",
+      "copyright_as_supplied": [
+        "Copyright (C) 2009 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odfmeta/odfmeta",
+      "version": "1.4.1",
+      "source_sha256": "80da011ab95980b622224f35b9acd7b85428e244580eb230c14f8e536acf4661",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2009 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odfoutline/odfoutline",
+      "version": "1.4.1",
+      "source_sha256": "374f6ccc9a5f7129ae2bb7f357dbe486784b4d713f20cf85d70a33ac378d5fc0",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "odfuserfield/odfuserfield",
+      "version": "1.4.1",
+      "source_sha256": "660199216966e7ffacdac40736292f80151b98db351b37d63796bbea67b9e09e",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006-2007 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    },
+    {
+      "source_path": "xml2odf/xml2odf",
+      "version": "1.4.1",
+      "source_sha256": "c8ee0c39a6cf0d76b2d716fc3e3c760d91f49f7c11fe4a0a22f6f4a9aa81901a",
+      "copyright_as_supplied": [
+        "Copyright (C) 2006 Søren Roug, European Environment Agency"
+      ],
+      "license_concluded": "Apache-2.0",
+      "license_text_paths_under_usr_share_doc_odfpy": [
+        "APACHE-LICENSE-2.0.txt"
+      ],
+      "review_basis": "Choose the Apache-2.0 alternative only for this explicitly dual-licensed file, supported by its header and README."
+    }
+  ],
+  "bytecode_rights": "Compiled bytecode retains the rights of its corresponding source file."
+}

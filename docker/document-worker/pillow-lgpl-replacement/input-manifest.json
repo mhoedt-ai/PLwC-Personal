@@ -1,0 +1,134 @@
+{
+  "sources": {
+    "pillow-12.3.0.tar.gz": "3b8182a766685eaa002637e28b4ec8d6b18819a0c71f579bf0dbaa5830297cce",
+    "freetype-2.14.3.tar.gz": "dc49de6b01a266eef4876a4dd34d9842c475d3e28ff2eff63bd2fb760ab56261",
+    "harfbuzz-14.2.1.tar.gz": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb"
+  },
+  "actual_pillow_wheel_sha256": "78cb2c6865a35ab8ff8b75fd122f6033b92a62c82801110e48ddd6c936a45d91",
+  "actual_library_inputs": [
+    {
+      "name": "libXau-154567c4.so.6.0.0",
+      "sha256": "05484d24bf78cb8ed03169f1cb067204d829cb7af21de8820400d29d115e4320",
+      "bytes": 22081
+    },
+    {
+      "name": "libavif-8a7f9d56.so.16.4.2",
+      "sha256": "3a8819e60f0fd7c716ef14776085a81c941db354002a9f9a679da38447e5507f",
+      "bytes": 5203513
+    },
+    {
+      "name": "libbrotlicommon-53534446.so.1.2.0",
+      "sha256": "d0034d3c0dc0dc698266f9ce61ef1701402960eb0f18c0defadc61b91f793d88",
+      "bytes": 144425
+    },
+    {
+      "name": "libbrotlidec-7e5462ba.so.1.2.0",
+      "sha256": "301d8f1b7365c0204485f7bdc89165936fa8212b36c4f78563fe4229df53863c",
+      "bytes": 66441
+    },
+    {
+      "name": "libfreetype-9fc94c80.so.6.20.6",
+      "sha256": "994d650f4fe686013580524dd868d7001325fa3bbf408800eaa4778138a7e690",
+      "bytes": 1467713
+    },
+    {
+      "name": "libharfbuzz-172d1f63.so.0.61421.0",
+      "sha256": "7ff87422406706600619c8467a2daa42a8122207dcb95337273ae18419f7a220",
+      "bytes": 970233
+    },
+    {
+      "name": "libjpeg-31e2ca52.so.62.4.0",
+      "sha256": "6d7c754529b30aff22efaaf88ba02061714591702c03f297f00ccb32ee6d9d9a",
+      "bytes": 829137
+    },
+    {
+      "name": "liblcms2-dade1fbf.so.2.0.19",
+      "sha256": "2549d6886e7de9960792e10ac87acfb9895e2afae85b7aac02108080cc7d3a71",
+      "bytes": 519257
+    },
+    {
+      "name": "liblzma-2be87c3e.so.5.8.3",
+      "sha256": "535737fa00b49f62d14d6d9bce76482440df700b33d2666d636894f751dd25f1",
+      "bytes": 266369
+    },
+    {
+      "name": "libopenjp2-b07f72ad.so.2.5.4",
+      "sha256": "185cb358047fd8b351c1d05b84a7e906c59d68d7f41222805f7042895ae266d8",
+      "bytes": 585849
+    },
+    {
+      "name": "libpng16-abb096d5.so.16.58.0",
+      "sha256": "44f1d1d821c9b57cda2b32d4a278eeaa03bc9930ae9da0ec0f384c3daf165e12",
+      "bytes": 278001
+    },
+    {
+      "name": "libsharpyuv-0066295b.so.0.1.2",
+      "sha256": "c2c5e89368b3bf9276a3cfea7e52ceb624db1c0c986c127169616219d5325807",
+      "bytes": 46113
+    },
+    {
+      "name": "libtiff-fc87e79d.so.6.2.0",
+      "sha256": "522bafb6812978fc53db6c32e5c57786186b551fc5fd6a7c61b857ca01261d16",
+      "bytes": 762929
+    },
+    {
+      "name": "libwebp-51b0b3f7.so.7.2.0",
+      "sha256": "7df9ad3680dd09d756511334791c8c896207863816eb2910840e5fc4ae10028a",
+      "bytes": 735313
+    },
+    {
+      "name": "libwebpdemux-9fe2abcc.so.2.0.17",
+      "sha256": "a7ccaaf4388d8ec212ca85be17907e8e021b7da113f7f48c47722c1ebe602f8e",
+      "bytes": 33553
+    },
+    {
+      "name": "libwebpmux-8fb1c9f6.so.3.1.2",
+      "sha256": "48ebf91c4d208901a48f851fb4c851d380fededd2a272104e3ca24c17499deba",
+      "bytes": 64257
+    },
+    {
+      "name": "libxcb-ad31f5a3.so.1.1.0",
+      "sha256": "633fe8df9f1bfc0ef60de6a3495a599ec56e56216491b90b79604cfecfb88000",
+      "bytes": 271913
+    },
+    {
+      "name": "libzstd-44be1190.so.1.5.7",
+      "sha256": "9501ab40e92a57491cadd2d02df46b596f24e74e6c0476b8500793f822fa0072",
+      "bytes": 1800497
+    }
+  ],
+  "input_files": {
+    "build.sh": {
+      "sha256": "f8b687c5a63e17f206a839a9ff060ad39c37a81f003e4560a28b4ca577552283",
+      "bytes": 4484
+    },
+    "COPYING.LIB": {
+      "bytes": 26419,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+    },
+    "freetype-2.14.3.tar.gz": {
+      "bytes": 2515533,
+      "sha256": "dc49de6b01a266eef4876a4dd34d9842c475d3e28ff2eff63bd2fb760ab56261"
+    },
+    "harfbuzz-14.2.1.tar.gz": {
+      "bytes": 37415150,
+      "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb"
+    },
+    "pillow-12.3.0.tar.gz": {
+      "bytes": 47025035,
+      "sha256": "3b8182a766685eaa002637e28b4ec8d6b18819a0c71f579bf0dbaa5830297cce"
+    },
+    "stdint.h": {
+      "bytes": 261,
+      "sha256": "f6560a57580ac7823dae446cd11c1ee88a2cca51b9a420b4ae586f96e4a008cf"
+    },
+    "syslimits.h": {
+      "bytes": 267,
+      "sha256": "00d4e14f4c6062679b0028ebaef566455f68471bc8e52c1519fb92df01299d70"
+    }
+  },
+  "scope": "Private source modification/replacement proof only; full file rights and complete release binding remain separate.",
+  "prior_failed_import": "Original first recipe omitted upstream pil_imaging_mode library, leaving findModeID unresolved. V2 compiles upstream Mode.c and links its object.",
+  "all_library_binaries_external_from_installed_original_runtime_or_verified_original_wheel": true,
+  "actual_executed_translation_units": 4
+}

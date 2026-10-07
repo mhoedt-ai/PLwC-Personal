@@ -1,0 +1,15 @@
+Unmodified LibreOffice 104x128 PNG embedded in odfpy 1.4.1 odf/thumbnail.py.
+Attribution as supplied by the exact upstream file follows verbatim.
+The image retains CC-BY-SA-3.0 rights independently of PLwC.
+License: https://creativecommons.org/licenses/by-sa/3.0/
+Complete legal text: CC-BY-SA-3.0.txt. No endorsement is claimed.
+
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# This contains a 104x128 px thumbnail in PNG format
+# Downloaded from http://da.libreoffice.org/assets/Uploads/Da-Projekt_Billeder/IconLibreOffice.png
+# Copyright information: Unless otherwise specified, all text and images on the
+# http://da.libreoffice.org website are licensed under the Creative Commons
+# Attribution-Share Alike 3.0 License. (As of 2013-01-09)
+
+# Alternative download: http://commons.wikimedia.org/wiki/File:LibreOffice_icon_3.3.1_48_px.svg

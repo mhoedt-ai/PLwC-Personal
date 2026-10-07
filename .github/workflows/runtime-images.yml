@@ -1,0 +1,209 @@
+name: PLwC Personal runtime image staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_private_staging:
+        description: "Push the verified images to private GHCR staging"
+        required: true
+        type: boolean
+        default: false
+      confirmation:
+        description: "Enter PUBLISH_PRIVATE_PERSONAL_STAGING after Product Owner approval"
+        required: true
+        type: string
+      approved_commit:
+        description: "Full 40-character approved Personal source commit"
+        required: true
+        type: string
+
+concurrency:
+  group: plwc-personal-runtime-image-staging
+  cancel-in-progress: false
+
+jobs:
+  build-verify-stage:
+    if: ${{ inputs.publish_private_staging && inputs.confirmation == 'PUBLISH_PRIVATE_PERSONAL_STAGING' }}
+    runs-on: ubuntu-latest
+    environment: personal-runtime-images-staging
+    permissions:
+      contents: read
+    env:
+      PYTHONHASHSEED: "0"
+      SOURCE_DATE_EPOCH: "0"
+      STAGING_REPOSITORY_PREFIX: ghcr.io/mhoedt-ai/plwc-personal-private-staging
+    steps:
+      - name: Checkout approved commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Require exact approved source commit
+        shell: bash
+        env:
+          APPROVED_COMMIT: ${{ inputs.approved_commit }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$APPROVED_COMMIT" =~ ^[0-9a-f]{40}$ || "$APPROVED_COMMIT" != "$GITHUB_SHA" ]]; then
+            echo "::error title=Unapproved source commit::The approved commit must equal the workflow source commit"
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12.14"
+          cache: pip
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        with:
+          install: true
+
+      - name: Install pinned Docker Scout CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          scout_installer=/tmp/install-docker-scout.sh
+          curl --fail --silent --show-error --location \
+            https://raw.githubusercontent.com/docker/scout-cli/48f3372dc714a91f8ec2635913d9b9ad1c299ada/install.sh \
+            --output "$scout_installer"
+          echo "3d350aa78a4bf01b5ba27211a0bbb69441fe05d46202ab1694c8921877176d19  $scout_installer" | sha256sum --check --strict
+          DOWNLOAD_TAG_INSTALL_SCRIPT=false sh "$scout_installer" -b "$HOME/.docker/cli-plugins" v1.20.3
+          docker scout version
+
+      - name: Authenticate Docker Scout
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_SCOUT_HUB_USER }}
+          password: ${{ secrets.DOCKER_SCOUT_HUB_PAT }}
+
+      - name: Require dedicated private GHCR credentials
+        shell: bash
+        env:
+          GHCR_STAGING_PAT: ${{ secrets.GHCR_STAGING_PAT }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$GHCR_STAGING_PAT" ]]; then
+            echo "::error title=Missing staging credential::GHCR_STAGING_PAT is required"
+            exit 1
+          fi
+
+      - name: Authenticate private GHCR staging
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_STAGING_PAT }}
+
+      - name: Build verified offline wheelhouse
+        run: python scripts/build_document_worker_wheelhouse.py --clean --download
+
+      - name: Build every image twice and create security evidence
+        run: python scripts/build_runtime_images.py --output-root build/runtime-images
+
+      - name: Verify reproducibility and security evidence
+        run: python scripts/verify_runtime_images.py --build-report build/runtime-images/image-build-report.json
+
+      - name: Preserve failed security-gate diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: plwc-personal-security-gate-failure-${{ github.sha }}
+          path: |
+            build/runtime-images/image-build-report.json
+            build/runtime-images/evidence/*/vulnerabilities.sarif.json
+            build/runtime-images/evidence/*/openvex.json
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 9
+
+      - name: Bootstrap absent private GHCR package shells
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_STAGING_PAT }}
+        run: |
+          set -euo pipefail
+          docker buildx build \
+            --load \
+            --network none \
+            --platform linux/amd64 \
+            --provenance=false \
+            --sbom=false \
+            --tag plwc-personal-staging-bootstrap:v1 \
+            docker/staging-bootstrap
+          for component in document-worker node-runner python-runner
+          do
+            package="plwc-personal-private-staging-${component}"
+            repository="${STAGING_REPOSITORY_PREFIX}-${component}"
+            error_file="$(mktemp)"
+            if package_json="$(gh api "/user/packages/container/${package}" 2>"$error_file")"; then
+              rm -f "$error_file"
+              visibility="$(jq -r .visibility <<<"$package_json")"
+              if [[ "$visibility" != "private" ]]; then
+                echo "::error title=Unsafe staging visibility::${package} is ${visibility}, expected private"
+                exit 1
+              fi
+              continue
+            fi
+            if ! grep --quiet "HTTP 404" "$error_file"; then
+              cat "$error_file" >&2
+              rm -f "$error_file"
+              exit 1
+            fi
+            rm -f "$error_file"
+            docker image tag plwc-personal-staging-bootstrap:v1 "${repository}:bootstrap-v1"
+            docker image push "${repository}:bootstrap-v1"
+            visibility="$(gh api "/user/packages/container/${package}" --jq .visibility)"
+            if [[ "$visibility" != "private" ]]; then
+              echo "::error title=Unsafe staging visibility::${package} is ${visibility}, expected private"
+              exit 1
+            fi
+          done
+
+      - name: Push reproducible commit-scoped staging tags directly with BuildKit
+        run: >-
+          python scripts/push_runtime_images.py
+          --build-report build/runtime-images/image-build-report.json
+          --output build/runtime-images/staging-push-report.json
+          --staging-repository-prefix ghcr.io/mhoedt-ai/plwc-personal-private-staging
+          --staging-suffix personal-r1-staging-${GITHUB_SHA::12}
+
+      - name: Verify every GHCR staging package is private
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GHCR_STAGING_PAT }}
+        run: |
+          set -euo pipefail
+          for package in \
+            plwc-personal-private-staging-document-worker \
+            plwc-personal-private-staging-node-runner \
+            plwc-personal-private-staging-python-runner
+          do
+            visibility="$(gh api "/user/packages/container/${package}" --jq .visibility)"
+            if [[ "$visibility" != "private" ]]; then
+              echo "::error title=Unsafe GHCR visibility::${package} is ${visibility}, expected private"
+              exit 1
+            fi
+          done
+
+      - name: Bind exact staged GHCR digests into the installer lock
+        run: >-
+          python scripts/finalize_runtime_image_manifest.py
+          --build-report build/runtime-images/image-build-report.json
+          --output build/runtime-images/runtime-images.json
+          --staging-repository-prefix ghcr.io/mhoedt-ai/plwc-personal-private-staging
+          --staging-suffix personal-r1-staging-${GITHUB_SHA::12}
+
+      - name: Reverify final digest lock and evidence
+        run: python scripts/verify_runtime_images.py --manifest build/runtime-images/runtime-images.json
+
+      - name: Upload immutable gate evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: plwc-personal-runtime-images-${{ github.sha }}
+          path: build/runtime-images/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 9
