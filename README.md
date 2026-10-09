@@ -1,254 +1,59 @@
-# PLwC — Personality Layer with Conscience
+# PLwC Personal 1.0.0
 
-<p align="center">
-  <img src="plwc-icon-512.png" alt="PLwC Gateway logo" width="192">
-</p>
+**Controlled local access for AI assistants, persistent profiles and governed changes.**
 
-PLwC is a local, model-independent governance gateway for AI tool access,
-persistent context and controlled memory. It is not the agent and it is not the
-language model. It is the independent control layer between the AI host, the
-model and local tools.
+PLwC lets compatible AI assistants read and organise allowed local files, create and read documents, and run Python or Node.js in isolated Docker environments under locally configured rules. Persistent profiles retain preferences and working context across sessions and compatible clients. The Governor separates proposed lasting profile changes from their explicitly confirmed application.
 
-```text
-AI host / model
-       |
-       v
-PLwC governance gateway
-       |
-       v
-tools, files, profiles, memory and sandbox
-```
+PLwC provides the local gateway and tools; you choose the AI client and model. Requests and returned contents can still be processed by an external AI provider.
 
-PLwC exposes **one visible MCP server**, routes all capabilities through policy
-and governance checks, and provides workspace, document, sandbox, profile,
-reflection and audit-oriented controls. The gateway is designed for MCP-capable
-hosts in general. Claude Desktop is a packaged and smoke-tested route, but the
-boundary remains useful when a host, such
-as ChatGPT Work, Claude or another MCP client, also offers its own file access
-or agent features.
+## Downloads and documentation
 
-## Status
+- [Official release: Windows setup, checksums, sources and browser packages](https://github.com/mhoedt-ai/PLwC-Personal/releases/tag/v1.0.0)
+- [Full software description in German: 65 pages, 22 diagrams](https://github.com/mhoedt-ai/PLwC-Personal/releases/download/v1.0.0/PLwC-Personal-1.0.0-Programm-und-Softwarebeschreibung-DE.pdf)
+- [Full software description in English: 62 pages, 22 diagrams](https://github.com/mhoedt-ai/PLwC-Personal/releases/download/v1.0.0/PLwC-Personal-1.0.0-Program-and-Software-Description-EN.pdf)
+- [Website and installation guidance](https://www.plwc.de/)
 
-- Current local development target: **PLwC Personal 1.0**.
-- All work from local commit `dc54211` onward belongs to the PLwC Personal
-  line and must not be published under Apache 2.0. Until a new Personal
-  release candidate has been rebuilt and approved, this development line
-  remains private.
-- The public baseline remains the Open Beta `v0.2.0-rc18.dev9`. Existing
-  Apache-2.0 rights for already published content are not revoked.
-- The local 1.0 line contains the complete eight-tool governed Gateway and the
-  PLwC Personal Chat Bridge integration for Chrome, Brave and Edge, but it is not a
-  public release line.
-- The current unsigned Windows build is an internal QA artifact only. It is
-  not an approved PLwC-Personal distribution.
-- The binding local policy and transition checklist are documented in
-  [`docs/PLWC_PERSONAL_1_0_LOCAL_POLICY.md`](docs/PLWC_PERSONAL_1_0_LOCAL_POLICY.md).
+PLwC Personal and its gateway use version **1.0.0**. The browser extension, **PLwC Personal Chat Bridge**, uses version **2.0.0** for Chrome and Edge; its store publication is separate. The bridge protocol is **1.0.0**.
 
-PLwC is not production-certified. It is local infrastructure under
-active development.
+## What is included
 
-## What PLwC is - and what it is not
+- A bilingual Windows installer with the gateway, configuration and selectable client integrations.
+- Bounded workspace file and directory operations.
+- DOCX, XLSX, PPTX, PDF and ZIP operations through the document worker.
+- Separate Docker runtimes for documents, Python and Node.js. Sandbox execution has no network access and no automatic host-shell fallback.
+- Local profiles, Compile, Reflection, memory and Governor Plan/Apply workflows.
+- A local Chat Bridge for ChatGPT in supported browsers; native STDIO integration for compatible MCP clients.
 
-PLwC is:
+The gateway exposes exactly eight tools: `plwc_status`, `plwc_describe`, `plwc_profile`, `plwc_reflection`, `plwc_governor`, `plwc_sandbox_run`, `plwc_workspace_operation` and `plwc_document_operation`.
 
-- an MCP gateway, not its own agent;
-- a local governance boundary between model requests and tool execution;
-- model- and host-independent policy for MCP-capable hosts;
-- controlled memory, profile and persona management through explicit profile,
-  reflection and Governor flows;
-- a single public MCP boundary named `plwc-gateway`.
+## Installation and integrity
 
-PLwC is not:
+Use Windows 11 x64. Python is required for the gateway; Node.js is additionally required for the Chat Bridge. Docker Desktop with Linux containers and WSL 2 is required for document and sandbox operations. The installer checks prerequisites and asks before optional runtime downloads.
 
-- a standalone AI platform;
-- a desktop agent;
-- the language model or a replacement for the user's chosen AI host;
-- a full proxy for all model traffic;
-- protection for data that a user or host sends directly to a cloud model
-  outside PLwC;
-- permission to expose raw PLfC/PBA or Desktop Commander MCP servers beside the
-  gateway.
+Without available Docker runtimes, profile and workspace functions remain usable in Safe Mode; document and sandbox operations are unavailable.
 
-## What PLwC does
+The official installer is `PLwC-Setup-1.0.0-installer-r27.exe`, SHA-256:
 
-- Exposes exactly **one** visible MCP server: `plwc-gateway`.
-- Provides exactly **eight** public facade tools (see below).
-- Controls workspace operations (read / write / search / move / rename
-  / exact replace / batch read).
-- Creates and reads `DOCX`, `XLSX`, `PPTX` and `PDF` artifacts.
-- Inspects, extracts, merges, splits and rotates PDFs.
-- Inspects, extracts and creates ZIP archives with bounded safety
-  limits.
-- Reads workspace raster images and returns them as MCP image content
-  blocks (PNG, JPEG, WEBP, first-frame GIF).
-- Runs sandboxed Python and Shell snippets through Docker, with no
-  silent fallback to a host shell.
-- Manages profiles, reflection writes, memory and persona governance,
-  and Governor `plan` / `apply` flows including
-  `reflection_condensation` with `plan_id` apply.
-- Blocks protected profile and governance paths from direct workspace
-  writes.
-- Emits structured local audit events for high-risk operations.
+`aa1650fd560b73d0920ce6a4f070f290602cafe271b35e6b6314fa3af25ffe23`
 
-## Public tools
+**The EXE has no Windows Authenticode signature (`NotSigned`).** Its release manifest has an independently verified RSA signature. The release includes the signed manifest, the public trust anchor, the final runtime lock and `SHA256SUMS.txt`.
 
-PLwC 1.0 exposes exactly these eight public facade tools:
+The unchanged V9 runtime digests are:
 
-| Tool | What it does |
-|---|---|
-| `plwc_status` | Reports gateway, sandbox, and profile runtime state; generates a ready-to-paste Claude Desktop config snippet. |
-| `plwc_describe` | Returns a self-description of all supported tools, operations, plan types, and capability boundaries — the single source of truth for what PLwC can do in the current session. |
-| `plwc_profile` | Loads, inspects, and activates profiles; compiles the configured profile into the active session context. |
-| `plwc_reflection` | Writes governed reflection entries to `reflection.md` with semantic validation — rejects pure technical logs and requires a reusable user, collaboration, or system insight. |
-| `plwc_governor` | Two-stage plan / apply flow for promoting insights to `memory.md` or `PERSONA.md`, condensing stale reflection candidates, and creating new profiles — all requiring explicit confirmation before any write. |
-| `plwc_sandbox_run` | Executes Python or Shell snippets in an isolated Docker container with no network access and no silent fallback to a host shell. |
-| `plwc_workspace_operation` | Reads, writes, lists, searches, copies, moves, and renames files within configured workspace roots; includes binary and base64 paths and an exact-replace mode. Delete is not public. |
-| `plwc_document_operation` | Creates and manipulates DOCX, XLSX, PPTX, and PDF files; inspects, merges, splits, rotates, and extracts text from PDFs; handles ZIP archives; reads workspace images as MCP image content blocks. |
+| Runtime | GHCR digest |
+| --- | --- |
+| Document worker | `sha256:cab60f93f65a1a5827b03757b59b8d026826bee0e4ca1e5a60d014d70d294064` |
+| Node.js runner | `sha256:d190b3e3f160be8f3aaf69d14b6b99f558fd66bff869d423c6e4aedc74cdd6f8` |
+| Python runner | `sha256:51d0bf8c0d6d1b4fc22a1f69d5b0ccd97369091f2654d17ce6d33b206f621a17` |
 
-The 19 individual public tool names from earlier scaffolds
-(`plwc_compile_profile`, `plwc_write_workspace_file`,
-`plwc_governor_plan`, `plwc_write_reflection`, ...) are **no longer
-public** in v1.0. Their behavior is reachable through the eight facade
-tools above via `operation` / `scope` / `lang` dispatch parameters.
+## Sources, licenses and support
 
-## Document capabilities
+The release sources are bound to commit `0c1c367c00bb7f5bb265d129f4daa7b73167b313` and tag `v1.0.0`. Changes to this README do not alter that release tag or its runtime/installer artifacts.
 
-- DOCX Creation V2 (layouts, styles, runs, lists, tables, images,
-  page breaks).
-- XLSX Creation V2 (multi-sheet, formatting, formulas-as-written
-  (not executed), freeze panes, boolean `auto_filter`, merges).
-- PPTX Creation V2 (five slide layouts, content elements, tables,
-  images, slide sizes, plain-text speaker notes).
-- PDF Creation V2 (layout-PDF builder with A4/A5/landscape/custom page
-  sizes, headings, paragraph runs, bullet/numbered lists, tables,
-  images, explicit page breaks).
-- `read_image` (governed workspace image reads).
-- ZIP create / inspect / extract.
-- PDF inspect / extract / merge / split / rotate / extract_pdf_text.
+[Corresponding GPL/LGPL sources, image mapping and replacement instructions](https://github.com/mhoedt-ai/PLwC-Personal/releases/tag/v1.0.0) are provided alongside the binaries. Third-party components retain their own licenses and applicable modification and replacement rights.
 
-## Security model
+PLwC-owned components use the [PolyForm Internal Use License 1.0.0](LICENSE), with [Personal Use Permission](PERSONAL_USE_PERMISSION.md) and [Official Redistribution Permission](OFFICIAL_REDISTRIBUTION_PERMISSION.md). These permit the specified private/internal use and free sharing of complete, unmodified official releases. Modified distribution and commercial offerings require a separate agreement. Earlier lawfully published Apache 2.0 content retains its original rights; see [licensing](LICENSING.md).
 
-- One visible gateway server. No bypass MCP servers are exposed.
-- Protected profile and governance files (`PERSONA.md`, `memory.md`,
-  `reflection.md`, `governance/config.yaml`, ...) cannot be edited
-  through workspace operations.
-- Workspace operations are scoped to configured roots; parent
-  traversal, absolute host paths, UNC paths and protected segments are
-  rejected.
-- Docker-backed Python and Shell sandbox; **no silent host-shell
-  fallback**.
-- Fail-closed behavior on missing engines, missing Docker image, or
-  policy denial.
-- No external URL fetching for document assets (PDF V2, PPTX V2 and
-  DOCX V2 image paths must be workspace-relative).
+Known status inconsistency: successful Python and Node.js executions can report `sandbox_ready: false`. The agreed execution tests completed successfully; this display inconsistency is documented.
 
-## Known limitations
-
-The following are intentionally **not implemented** in v1.0:
-
-- No OCR.
-- No PDF redaction.
-- No digital signing.
-- No form filling or form creation.
-- No PDF/A claim.
-- No LibreOffice or Pandoc conversion.
-- No macro execution (no `.docm` / `.xlsm` / `.pptm` generation).
-- No external URL fetching, no network access at runtime.
-- No JavaScript in PDFs.
-- No HTML/CSS rendering pipeline.
-
-## Installation
-
-For step-by-step installation, see
-[`docs/QUICKSTART_CLAUDE_DESKTOP.md`](docs/QUICKSTART_CLAUDE_DESKTOP.md).
-
-For full installation context, prerequisites and configuration
-options, including local GPT and Odysseus stdio setup plus hosted ChatGPT
-web/custom-app status, see [`docs/INSTALLATION.md`](docs/INSTALLATION.md).
-
-The selectable Windows EXE installer is maintained under
-[`installer/windows`](installer/windows/README.md). The Personal candidate
-packages the Gateway, Claude MCPB, Codex and Odysseus STDIO preparation, and
-the local PLwC Personal Chat Bridge. It detects complete existing installations,
-preserves their paths and settings, and uses stable `gateway` and `bridge`
-directory names for new installs. Its gated build and validation status is
-documented in [`installer/windows/V_MODEL.md`](installer/windows/V_MODEL.md).
-No exact Personal Setup artifact or final hash has been approved yet.
-
-The bilingual end-user flow, including language selection, administrator
-approval, download/storage estimates and Chrome/Edge Bridge setup, is described
-in [`docs/WINDOWS_INSTALLER_GUIDE.md`](docs/WINDOWS_INSTALLER_GUIDE.md).
-
-## Documentation
-
-- Current 1.0 program and software description:
-  [`docs/PROGRAM_AND_SOFTWARE_DESCRIPTION_1_0.md`](docs/PROGRAM_AND_SOFTWARE_DESCRIPTION_1_0.md)
-- Historical rc18 Open Beta program and software description:
-  [`docs/PROGRAM_AND_SOFTWARE_DESCRIPTION_OPEN_BETA.md`](docs/PROGRAM_AND_SOFTWARE_DESCRIPTION_OPEN_BETA.md)
-- Install / quickstart: [`docs/INSTALLATION.md`](docs/INSTALLATION.md),
-  [`docs/QUICKSTART_CLAUDE_DESKTOP.md`](docs/QUICKSTART_CLAUDE_DESKTOP.md),
-  [`docs/WINDOWS_INSTALLER_GUIDE.md`](docs/WINDOWS_INSTALLER_GUIDE.md)
-- Tool reference: [`docs/TOOLS.md`](docs/TOOLS.md)
-- Project scope: [`docs/PROJECT_SCOPE.md`](docs/PROJECT_SCOPE.md)
-- Security model and protected boundary:
-  [`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md),
-  [`docs/SAFE_MODE.md`](docs/SAFE_MODE.md)
-- Onboarding / profile setup:
-  [`docs/ONBOARDING.md`](docs/ONBOARDING.md),
-  [`docs/FIRST_RUN.md`](docs/FIRST_RUN.md)
-- Configuration and troubleshooting:
-  [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md),
-  [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md)
-- Maintainer client-integration design and scaffold:
-  [`docs/LOCAL_CHATGPT_CLIENT_ADAPTER.md`](docs/LOCAL_CHATGPT_CLIENT_ADAPTER.md),
-  [`integrations/plwc-chat-bridge/`](integrations/plwc-chat-bridge/)
-- Open beta / external testing - **start here:**
-  [`BETA_TESTING.md`](BETA_TESTING.md). Details:
-  [`docs/EXTERNAL_TESTER_GUIDE.md`](docs/EXTERNAL_TESTER_GUIDE.md),
-  [`docs/EXTERNAL_TEST_PLAN.md`](docs/EXTERNAL_TEST_PLAN.md),
-  [`docs/BUG_REPORT_TEMPLATE.md`](docs/BUG_REPORT_TEMPLATE.md),
-  [`docs/GITHUB_BETA_WORKFLOW.md`](docs/GITHUB_BETA_WORKFLOW.md)
-- Audit behavior: [`docs/AUDIT_LOG.md`](docs/AUDIT_LOG.md)
-
-## Project Website and Contact
-
-- Official website: [plwc.de](https://plwc.de/)
-- General inquiries: [info@plwc.de](mailto:info@plwc.de)
-
-Use [GitHub Issues](https://github.com/mhoedt-ai/PLwC-Personal/issues) for reproducible
-bugs and feature requests. For security-sensitive reports, contact
-[info@plwc.de](mailto:info@plwc.de) privately. Do not include secrets, real
-profile content, private paths or other sensitive details in public issues.
-
-## Support
-
-If PLwC helps you, you can support development via Ko-fi:
-
-https://ko-fi.com/mhoedtai
-
-Ko-fi support is voluntary and not required to use PLwC.
-
-## License boundary
-
-The current PLwC Personal line is licensed under the
-[PolyForm Internal Use License 1.0.0](LICENSE). Private personal use and
-modification are additionally permitted by the
-[PLwC Personal Use Permission 1.0](PERSONAL_USE_PERMISSION.md). Exact,
-complete and unmodified Official Releases may be shared free of charge under
-the separate
-[PLwC Official Redistribution Permission
-1.0](OFFICIAL_REDISTRIBUTION_PERMISSION.md). Modified versions, forks and
-custom builds may not be published or distributed without a separate written
-agreement.
-
-Content already lawfully published under Apache License 2.0 remains available
-to its recipients under those terms; the historical text is preserved at
-[LICENSES/APACHE-2.0.txt](LICENSES/APACHE-2.0.txt). Those existing rights are
-not revoked. Third-party licenses and notices remain unaffected. See
-[LICENSING.md](LICENSING.md) for the complete component and transition rules.
-
-## Third-party acknowledgement
-
-The optional document runtime includes ReportLab components with independent
-licence notices. This product includes software developed by Tyler C. Sarna.
-Complete third-party notices accompany the document runtime.
+Contact: [info@plwc.de](mailto:info@plwc.de). [Voluntary support on Ko-fi](https://ko-fi.com/mhoedtai).
